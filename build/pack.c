@@ -109,9 +109,15 @@ exit:
 static rpm_time_t * getBuildTime(void)
 {
     static rpm_time_t buildTime[1];
+    int btMacro;
 
-    if (buildTime[0] == 0)
-	buildTime[0] = (int32_t) time(NULL);
+    if (buildTime[0] == 0) {
+        btMacro = rpmExpandNumeric("%{?_buildtime}");
+        if (btMacro != 0)
+            buildTime[0] = (int32_t) btMacro;
+        else
+            buildTime[0] = (int32_t) time(NULL);
+    }
     return buildTime;
 }
 
